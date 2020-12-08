@@ -23,8 +23,8 @@ jobs:
       run: ./gradlew test    
     - name: Build Docker Image
       run: ./gradlew bootJar -Pdev jibDockerBuild
-    - name: List Docker Images
-      run: docker images
+
+      
 
     # Setup gcloud CLI
     - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
@@ -37,3 +37,8 @@ jobs:
     # helper for authentication
     - run: |-
         gcloud auth configure-docker
+        
+    - name: List Docker Images
+      run: docker tag employeeservice:latest "gcr.io/${{ secrets.GKE_PROJECT }}/employeeservice:latest"
+    - name: Push Image
+      run: docker push "gcr.io/${{ secrets.GKE_PROJECT }}/employeeservice:latest"
