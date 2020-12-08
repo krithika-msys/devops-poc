@@ -17,13 +17,15 @@ jobs:
       run: java -version
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-    - name: Build with Gradle
-      run: ./gradlew build
-    - name: Run Test Cases
-      run: ./gradlew test
-    #- name: Build Docker Image
-    #  run: ./gradlew bootJar -Pdev jibDockerBuild
-      
+    #- name: Build with Gradle
+    # run: ./gradlew build
+    #- name: Run Test Cases
+    #  run: ./gradlew test
+    - name: Check docker version
+      run: docker system info      
+    - name: Build Docker Image
+      run: ./gradlew bootJar -Pdev jibDockerBuild
+
     # Setup gcloud CLI
     - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
       with:
