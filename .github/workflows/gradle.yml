@@ -4,6 +4,12 @@ name: Java CI with Gradle
 on:
   push:
     branches: [main]
+env:
+  PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+  GKE_CLUSTER: devops-cluster    # TODO: update to cluster name
+  GKE_ZONE: us-central1-c   # TODO: update to cluster zone
+  DEPLOYMENT_NAME: gke-test # TODO: update to deployment name
+ 
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -42,3 +48,20 @@ jobs:
       run: docker tag employeeservice:latest "gcr.io/${{ secrets.GKE_PROJECT }}/employeeservice:latest"
     - name: Push Image
       run: docker push "gcr.io/${{ secrets.GKE_PROJECT }}/employeeservice:latest"
+ 
+ # Get the GKE credentials so we can deploy to the cluster
+    - run: |-
+        gcloud container clusters get-credentials "$GKE_CLUSTER" --zone "$GKE_ZONE" --project ${{ secrets.GKE_PROJECT }}
+    # Set up kustomize
+    - name: Set up Kustomize
+      run: |-
+        curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
+        chmod u+x ./kustomize
+
+    # Deploy the Docker image to the GKE cluster
+    - name: Deploy
+      run: |-
+        ./kustomize edit set image gcr.io/PROJECT_ID/IMAGE:TAG="gcr.io/${{ secrets.GKE_PROJECT }}/employeeservice:latest"
+        ./kustomize build . | kubectl apply -f -
+        kubectl rollout status deployment/$DEPLOYMENT_NAME
+        kubectl get services -o wide
