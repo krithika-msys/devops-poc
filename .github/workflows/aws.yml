@@ -30,7 +30,7 @@ on:
 name: Deploy to Amazon ECS
 
 jobs:
-  build and deploy:
+  build-deploy:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
