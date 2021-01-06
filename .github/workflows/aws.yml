@@ -77,13 +77,12 @@ jobs:
       id: deploy-k8s-yaml
       env:
         K8S_YAML_DIR: ./
-        IMAGE_NAME: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        IMAGE_NAME: "210552282242.dkr.ecr.us-east-2.amazonaws.com/employee-service"
       run: |
         # Setup kustomize
-        cd $K8S_YAML_DIR
         curl -s -o kustomize --location https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
         chmod u+x ./kustomize
-        ./kustomize edit set image IMAGE_NAME=$IMAGE_NAME
+        ./kustomize edit set image IMAGE_NAME="210552282242.dkr.ecr.us-east-2.amazonaws.com/employee-service"
         ./kustomize build . | kubectl apply -f -
         # Verify deployment
         kubectl rollout status deployment/aws-test
