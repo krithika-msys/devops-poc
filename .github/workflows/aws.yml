@@ -38,16 +38,6 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
-    - name: Check Java version
-      run: java -version
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    - name: Build with Gradle
-      run: ./gradlew build
-    - name: Run Test Cases
-      run: ./gradlew test    
-    - name: Build Docker Image
-      run: ./gradlew bootJar -Pdev jibDockerBuild
     
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -71,9 +61,9 @@ jobs:
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to EKS.
-        docker tag employeeservice:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+        #docker tag employeeservice:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        #docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        #echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
     - name: Setup kubeconfig
       id: setup-kubeconfig
@@ -81,7 +71,7 @@ jobs:
         EKS_CLUSTER_NAME: employee-service
         AWS-REGION: us-east-2
       run: |
-        aws eks --region $AWS-REGION update-kubeconfig --name $EKS_CLUSTER_NAME
+        aws eks --region us-east-2 update-kubeconfig --name employee-service
         
     - name: Deploy k8s yaml
       id: deploy-k8s-yaml
