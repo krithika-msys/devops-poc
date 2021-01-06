@@ -77,8 +77,12 @@ jobs:
 
     - name: Setup kubeconfig
       id: setup-kubeconfig
+      env:
+        EKS_CLUSTER_NAME: employee-service
+        AWS-REGION: us-east-2
       run: |
-        aws eks --region $aws-region update-kubeconfig --name $EKS_CLUSTER_NAME
+        aws eks --region $AWS-REGION update-kubeconfig --name $EKS_CLUSTER_NAME
+        
     - name: Deploy k8s yaml
       id: deploy-k8s-yaml
       env:
