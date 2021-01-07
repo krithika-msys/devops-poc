@@ -71,7 +71,7 @@ jobs:
         EKS_CLUSTER_NAME: test
         AWS-REGION: us-east-2
       run: |
-        aws eks --region us-east-2 update-kubeconfig --name employee-service
+        aws eks --region us-east-2 update-kubeconfig --name test
         
     - name: Deploy k8s yaml
       id: deploy-k8s-yaml
